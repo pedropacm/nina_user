@@ -6,6 +6,7 @@ from falcon import testing
 import json
 import pytest
 
+from nina_user.util.crypto import encode_rs512
 import nina_user.app
 import nina_user.user
 
@@ -66,7 +67,7 @@ def test_auth_user(client):
 
     expected_response_body = {
         "status": "OK",
-        "token": "token string"
+        "token": encode_rs512({'user_id': 1})
     }
     assert response.status == falcon.HTTP_OK
     assert response.json == expected_response_body

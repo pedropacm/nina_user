@@ -1,4 +1,5 @@
 import json
+from util.crypto import encode_rs512
 
 import falcon
 from nina_user.repo.user_repo import UserRepo, User
@@ -49,10 +50,9 @@ class UserAuth:
             auth_payload = json.load(req.bounded_stream)
             if(self.validate_auth_payload(auth_payload)):
                 user = self.user_repo.find_by_email(auth_payload['email'])
-                print user
                 if(user):
                     if(user.password == auth_payload['password']):
-                        token = "token string"
+                        token = encode_rs512({'user_id': user.id})
                         resp_body = {
                             "status": "OK",
                             "token": token
