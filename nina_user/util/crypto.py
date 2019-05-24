@@ -21,5 +21,5 @@ def encode_rs512(payload):
 
 def decode_rs512(payload):
 	rsa_pub_file = open(os.path.expanduser('~/.ssh/id_rsa.pub'), 'r')
-	pub_rsakey = load_pem_public_key(force_bytes(rsa_pub_file.read()), password=None, backend=default_backend())
-	return jwt.decode(payload, pub_rsakey, algorithm='RS512')
+	pub_rsakey = load_ssh_public_key(force_bytes(rsa_pub_file.read()), backend=default_backend())
+	return PyJWS().decode(payload, pub_rsakey)

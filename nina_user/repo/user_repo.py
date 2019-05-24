@@ -26,15 +26,16 @@ class UserRepo:
 	def save(self, user):
 		session.add(user)
 		session.commit()
+		return session.query(User).filter(
+			User.name == user.name,
+			User.email == user.email,
+			User.password == user.password).first()
 
 	def find_by_email(self, email):
-		user = session.query(User).filter(User.email == email).first()
-		return user
+		return session.query(User).filter(User.email == email).first()		
 
 	def find_by_id(self, user_id):
-		user = session.query(User).filter(User.id == user_id).first()
-		return user
-
+		return session.query(User).filter(User.id == user_id).first()
 
  
 class User(Base):
