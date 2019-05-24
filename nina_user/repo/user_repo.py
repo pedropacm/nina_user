@@ -28,7 +28,11 @@ class UserRepo:
 		session.commit()
 
 	def find_by_email(self, email):
-		user = session.query(User).filter(User.email == email).one()
+		user = session.query(User).filter(User.email == email).first()
+		return user
+
+	def find_by_id(self, user_id):
+		user = session.query(User).filter(User.id == user_id).first()
 		return user
 
 
@@ -38,5 +42,6 @@ class User(Base):
     # Here we define columns for the table person
     # Notice that each column is also a normal Python instance attribute.
     id = Column(Integer, primary_key=True)
+    name = Column(String(250), nullable=False)
     email = Column(String(250), nullable=False)
     password = Column(String(250), nullable=False)
