@@ -2,12 +2,14 @@ import json
 from util.crypto import encode_rs512
 
 import falcon
-from nina_user.repo.user_repo import UserRepo, User
+from nina_user.repo.user_repo import User
+from nina_user.repo.stub_user_repo import StubUserRepo
+
 
 class UserApi:
 
-    def __init__(self, user_repo):
-        self.user_repo = user_repo
+    def __init__(self, user_repo, test):
+        self.user_repo = StubUserRepo(user_repo, test=test)
 
     def on_post(self, req, resp):
         try:
@@ -18,9 +20,7 @@ class UserApi:
                 new_user.name = user_payload['name']
                 new_user.email = user_payload['email']
                 new_user.password = user_payload['password']
-
                 self.user_repo.save(new_user)
-
                 resp_body = {
                     "status": "OK"
                 }
@@ -40,12 +40,10 @@ class UserApi:
 
 class UserAuth:
 
-    def __init__(self, user_repo):
-        self.user_repo = user_repo
+    def __init__(self, user_repo, test):
+        self.user_repo = StubUserRepo(user_repo, test=test)
 
     def on_post(self, req, resp):
-        #import ipdb
-        #ipdb.set_trace(context=21)
         try:
             auth_payload = json.load(req.bounded_stream)
             if(self.validate_auth_payload(auth_payload)):

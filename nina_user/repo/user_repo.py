@@ -8,7 +8,7 @@ from sqlalchemy.orm import sessionmaker
  
 Base = declarative_base()
 
-engine = create_engine('sqlite:///:memory:')
+engine = create_engine('sqlite:///nina_user.db')
 Base.metadata.bind = engine
  
 DBSession = sessionmaker(bind=engine)
@@ -24,18 +24,26 @@ class UserRepo:
 		
 
 	def save(self, user):
-		session.add(user)
-		session.commit()
-		return session.query(User).filter(
-			User.name == user.name,
-			User.email == user.email,
-			User.password == user.password).first()
+		try:
+			session.add(user)
+			session.commit()
+			return session.query(User).filter(
+				User.name == user.name,
+				User.email == user.email,
+				User.password == user.password).first()
+		except:
+			session.rollback()
+			raise Exception('User not saved')
 
 	def find_by_email(self, email):
 		return session.query(User).filter(User.email == email).first()		
 
 	def find_by_id(self, user_id):
 		return session.query(User).filter(User.id == user_id).first()
+
+	def reset_database(self):
+		Base.metadata.drop_all()
+		Base.metadata.create_all(engine)
 
  
 class User(Base):
@@ -44,5 +52,5 @@ class User(Base):
     # Notice that each column is also a normal Python instance attribute.
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False)
-    email = Column(String(250), nullable=False)
+    email = Column(String(250), nullable=False, unique=True)
     password = Column(String(250), nullable=False)

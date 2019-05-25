@@ -13,7 +13,7 @@ import nina_user.user
 
 @pytest.fixture
 def client():
-    api = nina_user.app.create_app()
+    api = nina_user.app.create_app(test=True)
     return testing.TestClient(api)
 
 
@@ -55,6 +55,17 @@ def test_post_user_missing_input_values(client):
     assert response.json == expected_response_body
 
 def test_auth_user(client):
+    user_payload = {
+        "name": "Test User",
+        "email": "test@example.com",
+        "password": "12345"
+    }
+    response = client.simulate_post(
+        '/api/v1/user/register',
+        body = json.dumps(user_payload, ensure_ascii=False),
+        headers={'content-type': falcon.MEDIA_JSON}
+    )
+
     auth_payload = {
         "email": "test@example.com",
         "password": "12345"
@@ -73,6 +84,17 @@ def test_auth_user(client):
     assert response.json == expected_response_body
 
 def test_auth_user_wrong_password(client):
+    user_payload = {
+        "name": "Test User",
+        "email": "test@example.com",
+        "password": "12345"
+    }
+    response = client.simulate_post(
+        '/api/v1/user/register',
+        body = json.dumps(user_payload, ensure_ascii=False),
+        headers={'content-type': falcon.MEDIA_JSON}
+    )
+
     auth_payload = {
         "email": "test@example.com",
         "password": "wrong_password"

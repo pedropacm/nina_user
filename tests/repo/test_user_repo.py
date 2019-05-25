@@ -6,7 +6,7 @@ def test_create_user():
 	user_repo = UserRepo()
 
 	user = User()
-	user.name = "Test User"
+	user.name = "Teste User"
 	user.email = "test@example.com"
 	user.password = "12345"
 
