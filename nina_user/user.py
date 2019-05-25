@@ -15,7 +15,6 @@ class UserApi:
         try:
             user_payload = json.load(req.bounded_stream)
             if(self.validate_user_payload(user_payload)):
-                print user_payload
                 new_user = User()
                 new_user.name = user_payload['name']
                 new_user.email = user_payload['email']
